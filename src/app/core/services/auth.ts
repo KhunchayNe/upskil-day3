@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, map, Observable, tap } from 'rxjs';
 import { Api } from './api';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -13,17 +13,20 @@ export class Auth {
   );
   public isLoggedIn$ = this._isLoggedIn.asObservable();
 
-  constructor(private api: Api) {}
+  constructor(
+    private api: Api
+  ) {}
 
   login(email: string, password: string): Observable<{ token: string }> {
+    console.log('Login called with:', { email, password });
     return this.api
       .post<{ access_token: string }>('auth/login', { email, password })
       .pipe(
-        tap((res:any) => {
+        tap((res: any) => {
           localStorage.setItem(this.tokenKey, res.access_token);
           this._isLoggedIn.next(true);
         }),
-        map((res:any) => ({ token: res.access_token }))
+        map((res: any) => ({ token: res.access_token }))
       );
   }
 
